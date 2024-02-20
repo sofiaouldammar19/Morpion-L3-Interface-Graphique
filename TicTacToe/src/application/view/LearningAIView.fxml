@@ -10,6 +10,6 @@
       <Button layoutX="504.0" layoutY="337.0" mnemonicParsing="false" onAction="#onCancelClicked" text="Cancel" />
       <Button layoutX="400.0" layoutY="337.0" mnemonicParsing="false" onAction="#onStartClicked" text="Start" />
       <ProgressBar fx:id="progressBar" layoutX="200.0" layoutY="213.0" prefWidth="200.0" progress="0.0" />
-      <TextField fx:id="textField" layoutX="226.0" layoutY="175.0" />
+      <TextField fx:id="textField" alignment="CENTER" layoutX="171.0" layoutY="175.0" prefHeight="25.0" prefWidth="255.0" />
    </children>
 </Pane>
