@@ -1,50 +1,135 @@
 package application.controller;
 
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import ai.MultiLayerPerceptron;
+import ai.SigmoidalTransferFunction;
+import ai.Coup;
+import ai.Config;
+import ai.ConfigFileLoader;
+import java.util.HashMap;
 
-/**
- * 
- */
 public class LearningAIController {
-	
-	@FXML
+
+    @FXML
     private ProgressBar progressBar;
-	
-	@FXML
-	private TextField textField;
 
-    private Task<Void> task;
+    @FXML
+    private TextField textField;
 
-    public void initialize() {
-        task = new Task<Void>() {
+    @FXML
+    private Button startButton; 
+
+    @FXML
+    private Button cancelButton;
+
+    private Task<Void> trainingTask;
+    
+    private Config config;
+
+    @FXML
+    void onStartClicked(ActionEvent event) {
+        startTraining();
+    }
+    
+    private void startTraining() {
+        String desiredLevel = "F"; 
+
+        // Initialize ConfigFileLoader and load configurations
+        ConfigFileLoader configFileLoader = new ConfigFileLoader();
+        configFileLoader.loadConfigFile("./resources/config.txt");
+        
+        // Retrieve the specific Config object for the desired level
+        config = configFileLoader.get(desiredLevel);
+        System.out.println(config.toString());
+
+        // Check if the config was successfully retrieved
+        if (config == null) {
+            textField.setText("Failed to load configuration for level: " + desiredLevel);
+            return; // Exit the method if config is not available
+        }
+
+        HashMap<Integer, Coup> mapTrain = ai.Test.loadCoupsFromFile("./resources/train_dev_test/train.txt");
+        int size = 9;
+        int h = config.hiddenLayerSize;
+        double lr = config.learningRate;
+        int l = config.numberOfhiddenLayers;
+        double epochs = 100000;
+        boolean verbose = true;
+
+        trainingTask = new Task<Void>() {
             @Override
-            protected Void call() {
-                final int max = 100000000;
-                for (int i = 1; i <= max; i++) {
+            protected Void call() throws Exception {
+                if (verbose) updateMessage("START TRAINING ...");
+
+
+                int[] layers = new int[l + 2];
+                layers[0] = size;
+                for (int i = 0; i < l; i++) {
+                    layers[i + 1] = h;
+                }
+                layers[layers.length - 1] = size;
+
+                MultiLayerPerceptron net = new MultiLayerPerceptron(layers, lr, new SigmoidalTransferFunction());
+                double error = 0.0;
+
+                for (int i = 0; i < epochs; i++) {
                     if (isCancelled()) {
+                        updateMessage("Training cancelled.");
                         break;
                     }
-                    updateProgress(i, max);
+
+                    Coup c = null;
+                    while (c == null) {
+                        c = mapTrain.get((int) (Math.round(Math.random() * mapTrain.size())));
+                    }
+
+                    error += net.backPropagate(c.in, c.out);
+
+                    if (i % 1000 == 0 && verbose) { 
+                        String message = "Error at step " + i + " is " + (error / (double) i);
+                        updateMessage(message);
+                        updateProgress(i, epochs);
+                    }
                 }
+
+                if (!isCancelled()) updateMessage("Learning completed!");
+
                 return null;
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
-    }
+        progressBar.progressProperty().bind(trainingTask.progressProperty());
+        textField.textProperty().bind(trainingTask.messageProperty());
 
+        Thread thread = new Thread(trainingTask);
+        thread.setDaemon(true);
+        thread.start();
+
+        trainingTask.setOnSucceeded(e -> {
+            progressBar.progressProperty().unbind();
+            textField.textProperty().unbind();
+            progressBar.setProgress(0);
+            textField.setText("Training complete!");
+        });
+
+        trainingTask.setOnCancelled(e -> {
+            progressBar.progressProperty().unbind();
+            textField.textProperty().unbind();
+            progressBar.setProgress(0);
+            textField.setText("Training cancelled.");
+        });
+    }
+    
     @FXML
-    private void onStartClicked() {
-        textField.setText("Démarrage en cours...");
-        new Thread(task).start();
+    void onCancelClicked(ActionEvent event) {
+        if (trainingTask != null) {
+            trainingTask.cancel();
+        }
     }
 
-
-    @FXML
-    private void onCancelClicked() {
-        task.cancel();
-    }
 }

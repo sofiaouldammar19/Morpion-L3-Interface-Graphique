@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Collection;
+
 
 public class ConfigFileLoader {
 
@@ -61,4 +63,8 @@ public class ConfigFileLoader {
 
 	//FIELDS ...
 	private HashMap<String, Config> mapConfig ;
+	
+	public Collection<Config> getAllConfigs() {
+        return mapConfig.values();
+    }
 }
