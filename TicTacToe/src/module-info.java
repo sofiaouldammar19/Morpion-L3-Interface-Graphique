@@ -7,6 +7,6 @@ module TicTacToe {
     opens application to javafx.fxml;
 
     exports application;
-    exports application.controller;
-    opens application.controller to javafx.fxml;
+    exports controller;
+    opens controller to javafx.fxml;
 }

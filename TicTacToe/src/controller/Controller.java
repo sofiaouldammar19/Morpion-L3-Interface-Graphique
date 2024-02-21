@@ -1,9 +1,11 @@
-package application.controller;
-import ai.Config;
-import ai.ConfigFileLoader;
+package controller;
+
 import java.net.URL;
 import java.util.Collection;
 import java.util.ResourceBundle;
+
+import ai.Config;
+import ai.ConfigFileLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;

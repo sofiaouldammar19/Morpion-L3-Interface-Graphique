@@ -10,7 +10,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage wind) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("view/LearningAIView.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/view/LearningAIView.fxml"));
 		
 		wind.setTitle("JavaFX");
 		

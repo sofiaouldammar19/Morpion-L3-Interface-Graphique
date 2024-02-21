@@ -1,4 +1,4 @@
-package application.controller;
+package controller;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -6,12 +6,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import ai.MultiLayerPerceptron;
-import ai.SigmoidalTransferFunction;
-import ai.Coup;
+import java.util.HashMap;
+
 import ai.Config;
 import ai.ConfigFileLoader;
-import java.util.HashMap;
+import ai.Coup;
+import ai.MultiLayerPerceptron;
+import ai.SigmoidalTransferFunction; 
+
 
 public class LearningAIController {
 
@@ -29,7 +31,7 @@ public class LearningAIController {
 
     private Task<Void> trainingTask;
     
-    private Config config;
+    private ai.Config config;
 
     @FXML
     void onStartClicked(ActionEvent event) {
@@ -44,7 +46,7 @@ public class LearningAIController {
         configFileLoader.loadConfigFile("./resources/config.txt");
         
         // Retrieve the specific Config object for the desired level
-        config = configFileLoader.get(desiredLevel);
+        Config config = configFileLoader.get(desiredLevel);
         System.out.println(config.toString());
 
         // Check if the config was successfully retrieved
