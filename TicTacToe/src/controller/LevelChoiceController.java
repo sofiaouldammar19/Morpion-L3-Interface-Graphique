@@ -54,7 +54,7 @@ public class LevelChoiceController {
             }
             Parent root = loader.load();
             Stage stage = (Stage) easy.getScene().getWindow();
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, 900, 700);
             stage.setScene(scene);
             stage.show();
 
@@ -75,34 +75,28 @@ public class LevelChoiceController {
     	try {
             ConfigFileLoader configFileLoader = new ConfigFileLoader();
             configFileLoader.loadConfigFile("./resources/config.txt");
-            Config config = configFileLoader.get("M"); // For Easy, "M" for Medium, "D" for Difficult
+            Config config = configFileLoader.get("M"); // Assume "F" is for Easy
             
             String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
             String modelFilePath = "./resources/models/" + modelFileName;
             
             File file = new File(modelFilePath);
             
+            FXMLLoader loader;
             if (!file.exists()) {
-            	file.createNewFile();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LearningAIView.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/view/LearningAIView.fxml"));
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml"));
+            }
             Parent root = loader.load();
-
-            LearningAIController learningAIController = loader.getController();
-            learningAIController.setConfig(config); // Pass the config to LearningAIController
-
             Stage stage = (Stage) medium.getScene().getWindow();
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, 900, 700);
             stage.setScene(scene);
             stage.show();
-            }
-            else {
-           	 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml"));
-           	 Parent root = loader.load();
-           	 Stage stage = (Stage) easy.getScene().getWindow();
-                Scene scene = new Scene(root, 800, 600);
-                stage.setScene(scene);
-                stage.show();
+
+            if (!file.exists()) {
+                LearningAIController learningAIController = loader.getController();
+                learningAIController.setConfigAndStart(config); // Pass the config to LearningAIController
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,36 +109,29 @@ public class LevelChoiceController {
     	try {
             ConfigFileLoader configFileLoader = new ConfigFileLoader();
             configFileLoader.loadConfigFile("./resources/config.txt");
-            Config config = configFileLoader.get("D"); // For Easy, "M" for Medium, "D" for Difficult
+            Config config = configFileLoader.get("D"); // Assume "F" is for Easy
             
             String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
             String modelFilePath = "./resources/models/" + modelFileName;
             
             File file = new File(modelFilePath);
             
+            FXMLLoader loader;
             if (!file.exists()) {
-            	file.createNewFile();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LearningAIView.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/view/LearningAIView.fxml"));
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml"));
+            }
             Parent root = loader.load();
-
-            LearningAIController learningAIController = loader.getController();
-            learningAIController.setConfig(config); // Pass the config to LearningAIController
-
             Stage stage = (Stage) difficult.getScene().getWindow();
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, 900, 700);
             stage.setScene(scene);
             stage.show();
+
+            if (!file.exists()) {
+                LearningAIController learningAIController = loader.getController();
+                learningAIController.setConfigAndStart(config); // Pass the config to LearningAIController
             }
-            else {
-              	 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml"));
-               	 Parent root = loader.load();
-               	 Stage stage = (Stage) easy.getScene().getWindow();
-                    Scene scene = new Scene(root, 800, 600);
-                    stage.setScene(scene);
-                    stage.show();
-            }
-     
         } catch (IOException e) {
             e.printStackTrace();
         }

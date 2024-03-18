@@ -1,12 +1,18 @@
 package controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.TicTacToeGame;
 
 public class TicTacToeGameController {
@@ -33,6 +39,16 @@ public class TicTacToeGameController {
             }
         }
     }
+    
+    @FXML
+
+    private void handleRetour(ActionEvent event) throws IOException {
+    	Parent ret = FXMLLoader.load(getClass().getResource("/view/View.fxml"));
+    	Scene nvScene = new Scene(ret, 900, 700);
+    	Stage stageActuel = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    	stageActuel.setScene(nvScene);
+    	stageActuel.show();
+  }
 
 
 	@FXML

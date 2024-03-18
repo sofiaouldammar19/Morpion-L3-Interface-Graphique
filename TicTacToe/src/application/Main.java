@@ -14,7 +14,7 @@ public class Main extends Application {
 		
 		wind.setTitle("JavaFX");
 		
-		Scene scene = new Scene(root, 800, 600);
+		Scene scene = new Scene(root, 900, 700);
 		wind.setScene(scene);
 		wind.setMinHeight(550);
 		wind.setMinWidth(550);

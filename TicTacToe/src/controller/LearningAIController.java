@@ -22,6 +22,30 @@ import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction; 
 
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+
+import ai.Config;
+import ai.Coup;
+import ai.MultiLayerPerceptron;
+import ai.SigmoidalTransferFunction; 
+
+
 public class LearningAIController {
 
     @FXML
@@ -50,9 +74,9 @@ public class LearningAIController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); // Assurez-vous que le chemin est correct
                 Parent root = loader.load();
-                Scene scene = new Scene(root);
+                Scene scene = new Scene(root, 900, 700);
                 Stage stage = (Stage) progressBar.getScene().getWindow(); // Obtient le stage actuel à partir d'un des composants
-                stage.setScene(scene);
+                stage.setScene(scene);                
                 stage.show();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -130,6 +154,9 @@ public class LearningAIController {
                 return null;
             }
         };
+    
+    
+        
 
         progressBar.progressProperty().bind(trainingTask.progressProperty());
         textField.textProperty().bind(trainingTask.messageProperty());
@@ -167,8 +194,14 @@ public class LearningAIController {
         }
         
     }
+    
 
-    public boolean save(String path){
+    
+    
+
+    
+    
+	public boolean save(String path){
 		try{
 			FileOutputStream fout = new FileOutputStream(path);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -180,4 +213,6 @@ public class LearningAIController {
 		}
 		return true;
 	}
+
 }
+

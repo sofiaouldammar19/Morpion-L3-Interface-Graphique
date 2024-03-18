@@ -216,7 +216,7 @@ public class Controller implements Initializable {
             Stage stage = (Stage) gameVsAIBtn.getScene().getWindow(); 
 
             // Create a new scene with the loaded root node
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, 900, 700);
 
             // Set the new scene on the current stage
             stage.setScene(scene);
@@ -238,7 +238,7 @@ public class Controller implements Initializable {
             Stage stage = (Stage) gameVsHumanBtn.getScene().getWindow(); 
 
             // Create a new scene with the loaded root node
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, 900, 700);
 
             // Set the new scene on the current stage
             stage.setScene(scene);
