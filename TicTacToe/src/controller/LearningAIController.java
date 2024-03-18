@@ -1,15 +1,22 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import ai.Config;
-import ai.ConfigFileLoader;
 import ai.Coup;
 import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction; 
@@ -23,36 +30,58 @@ public class LearningAIController {
     @FXML
     private TextField textField;
 
-    @FXML
-    private Button startButton; 
-
-    @FXML
-    private Button cancelButton;
-
     private Task<Void> trainingTask;
     
-    private ai.Config config;
+    private Config config;
+    
+    private MultiLayerPerceptron net;
+    
+    public void setConfig(Config config) {
+        this.config = config;
+    }
 
-    @FXML
-    void onStartClicked(ActionEvent event) {
+    public void setConfigAndStart(Config config) {
+        this.config = config;
         startTraining();
     }
     
-    private void startTraining() {
-        String desiredLevel = "F"; 
-
-        // Initialize ConfigFileLoader and load configurations
-        ConfigFileLoader configFileLoader = new ConfigFileLoader();
-        configFileLoader.loadConfigFile("./resources/config.txt");
-        
-        // Retrieve the specific Config object for the desired level
-        Config config = configFileLoader.get(desiredLevel);
-        System.out.println(config.toString());
+    private void changeScene() {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); // Assurez-vous que le chemin est correct
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                Stage stage = (Stage) progressBar.getScene().getWindow(); // Obtient le stage actuel à partir d'un des composants
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+    
+    public void startTraining() {
 
         // Check if the config was successfully retrieved
         if (config == null) {
-            textField.setText("Failed to load configuration for level: " + desiredLevel);
+        	textField.setText("Configuration is not set.");
             return; // Exit the method if config is not available
+        }
+        
+        System.out.println(config.toString());
+        
+        String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+        String modelFilePath = "./resources/models/" + modelFileName;
+
+        File modelFile = new File(modelFilePath);
+        if (!modelFile.exists()) {
+            try {
+                modelFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                textField.setText("Failed to create model file.");
+                return;
+            }
         }
 
         HashMap<Integer, Coup> mapTrain = ai.Test.loadCoupsFromFile("./resources/train_dev_test/train.txt");
@@ -76,14 +105,11 @@ public class LearningAIController {
                 }
                 layers[layers.length - 1] = size;
 
-                MultiLayerPerceptron net = new MultiLayerPerceptron(layers, lr, new SigmoidalTransferFunction());
+                net = new MultiLayerPerceptron(layers, lr, new SigmoidalTransferFunction());
+                
                 double error = 0.0;
 
                 for (int i = 0; i < epochs; i++) {
-                    if (isCancelled()) {
-                        updateMessage("Training cancelled.");
-                        break;
-                    }
 
                     Coup c = null;
                     while (c == null) {
@@ -99,7 +125,7 @@ public class LearningAIController {
                     }
                 }
 
-                if (!isCancelled()) updateMessage("Learning completed!");
+                 updateMessage("Learning completed!");
 
                 return null;
             }
@@ -117,21 +143,41 @@ public class LearningAIController {
             textField.textProperty().unbind();
             progressBar.setProgress(0);
             textField.setText("Training complete!");
+            save(modelFilePath);
+
+            changeScene();
         });
 
-        trainingTask.setOnCancelled(e -> {
-            progressBar.progressProperty().unbind();
-            textField.textProperty().unbind();
-            progressBar.setProgress(0);
-            textField.setText("Training cancelled.");
-        });
-    }
-    
-    @FXML
-    void onCancelClicked(ActionEvent event) {
-        if (trainingTask != null) {
-            trainingTask.cancel();
+        
+        try {
+            // Création d'un flux de sortie pour écrire dans le fichier
+            FileOutputStream fileOut = new FileOutputStream(modelFilePath);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            // Sérialisation et écriture de l'objet 'net' (votre modèle entraîné) dans le fichier
+            out.writeObject(net); // 'net' est votre instance de MultiLayerPerceptron
+
+            // Fermeture des flux
+            out.close();
+            fileOut.close();
+
+            System.out.printf("Le modèle sérialisé est sauvegardé dans %s%n", modelFilePath);
+        } catch (IOException i) {
+            i.printStackTrace();
         }
+        
     }
 
+    public boolean save(String path){
+		try{
+			FileOutputStream fout = new FileOutputStream(path);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(this);
+			oos.close();
+		}
+		catch (Exception e) { 
+			return false;
+		}
+		return true;
+	}
 }
