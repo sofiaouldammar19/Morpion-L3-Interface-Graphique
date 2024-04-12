@@ -1,4 +1,4 @@
-package ai;
+package tools;
 
 public interface TransferFunction{
 	public double evalute(double value);

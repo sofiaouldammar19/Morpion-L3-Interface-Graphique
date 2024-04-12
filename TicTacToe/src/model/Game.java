@@ -3,8 +3,8 @@
  */
 package model;
 
-import ai.Coup;
-import ai.MultiLayerPerceptron;
+import tools.Coup;
+import tools.MultiLayerPerceptron;
 
 public class Game {
     private Coup[] board;

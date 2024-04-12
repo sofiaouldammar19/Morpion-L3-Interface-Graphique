@@ -3,15 +3,16 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 
-import ai.Config;
-import ai.ConfigFileLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import tools.Config;
+import tools.ConfigFileLoader;
 
 public class LevelChoiceController {
 
@@ -30,7 +31,7 @@ public class LevelChoiceController {
     // after the FXML file has been loaded.
     @FXML
     private void initialize() {
-        // Initialization logic here, if necessary
+        // Initialization logic hoere, if necessary
     }
 
     // Handler for the Easy button
@@ -41,31 +42,33 @@ public class LevelChoiceController {
             configFileLoader.loadConfigFile("./resources/config.txt");
             Config config = configFileLoader.get("F"); // Assume "F" is for Easy
             
-            String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+            String modelFileName = String.format("easy-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
             String modelFilePath = "./resources/models/" + modelFileName;
             
             File file = new File(modelFilePath);
             
-            FXMLLoader loader;
-            if (!file.exists()) {
-                loader = new FXMLLoader(getClass().getResource("/view/LearningAIView.fxml"));
-            } else {
-                loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml"));
-            }
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/TicTacToeGameView.fxml" : "/view/LearningAIView.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) easy.getScene().getWindow();
+            
+            if (!file.exists()) {
+                // AI learning view
+                LearningAIController learningAIController = loader.getController();
+                learningAIController.setConfigAndStart(config);
+            } else {
+                // Game view against AI
+                TicTacToeGameController gameController = loader.getController();
+                gameController.setPlayingAgainstAI(true);
+            }
+            
             Scene scene = new Scene(root, 900, 700);
+            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
-
-            if (!file.exists()) {
-                LearningAIController learningAIController = loader.getController();
-                learningAIController.setConfigAndStart(config); // Pass the config to LearningAIController
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
  
 
@@ -77,7 +80,7 @@ public class LevelChoiceController {
             configFileLoader.loadConfigFile("./resources/config.txt");
             Config config = configFileLoader.get("M"); // Assume "F" is for Easy
             
-            String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+            String modelFileName = String.format("medium-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
             String modelFilePath = "./resources/models/" + modelFileName;
             
             File file = new File(modelFilePath);
@@ -111,7 +114,7 @@ public class LevelChoiceController {
             configFileLoader.loadConfigFile("./resources/config.txt");
             Config config = configFileLoader.get("D"); // Assume "F" is for Easy
             
-            String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+            String modelFileName = String.format("difficult-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
             String modelFilePath = "./resources/models/" + modelFileName;
             
             File file = new File(modelFilePath);

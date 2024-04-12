@@ -5,17 +5,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LevelChoiceController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../application/Main.css" fx:controller="controller.LevelChoiceController">
 
    <center>
-      <VBox alignment="CENTER" spacing="20" prefHeight="400.0" prefWidth="300.0" BorderPane.alignment="CENTER" style="-fx-background-color: #FFFFFF;">
+      <VBox id="back" alignment="CENTER" spacing="20" prefHeight="400.0" prefWidth="300.0" BorderPane.alignment="CENTER" >
          <padding>
             <Insets top="20" bottom="20" left="20" right="20"/>
          </padding>
          <children>
-            <Button fx:id="easy" mnemonicParsing="false" text="Easy" onAction="#handleEasyAction"/>
-            <Button fx:id="medium" mnemonicParsing="false" text="Medium" onAction="#handleMediumAction"/>
-            <Button fx:id="difficult" mnemonicParsing="false" text="Difficult" onAction="#handleDifficultAction"/>
+            <Button id="btn" fx:id="easy" mnemonicParsing="false" text="Easy" onAction="#handleEasyAction"/>
+            <Button id="btn" fx:id="medium" mnemonicParsing="false" text="Medium" onAction="#handleMediumAction"/>
+            <Button id="btn" fx:id="difficult" mnemonicParsing="false" text="Difficult" onAction="#handleDifficultAction"/>
          </children>
       </VBox>
    </center>

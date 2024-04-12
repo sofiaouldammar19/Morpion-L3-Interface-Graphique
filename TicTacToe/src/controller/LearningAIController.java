@@ -6,53 +6,35 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.stage.Stage;
-
+import tools.Config;
+import tools.Coup;
+import tools.MultiLayerPerceptron;
+import tools.SigmoidalTransferFunction;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.util.HashMap;
+import javafx.util.Duration;
 
-import ai.Config;
-import ai.Coup;
-import ai.MultiLayerPerceptron;
-import ai.SigmoidalTransferFunction; 
-
-
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-
-import ai.Config;
-import ai.Coup;
-import ai.MultiLayerPerceptron;
-import ai.SigmoidalTransferFunction; 
 
 
 public class LearningAIController {
 
     @FXML
-    private ProgressBar progressBar;
-
+    private ProgressIndicator progressIndicator;
+    
     @FXML
-    private TextField textField;
+    private ImageView imageView;
+
 
     private Task<Void> trainingTask;
     
@@ -70,12 +52,12 @@ public class LearningAIController {
     }
     
     private void changeScene() {
-        Platform.runLater(() -> {
+    	Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); // Assurez-vous que le chemin est correct
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); 
                 Parent root = loader.load();
                 Scene scene = new Scene(root, 900, 700);
-                Stage stage = (Stage) progressBar.getScene().getWindow(); // Obtient le stage actuel à partir d'un des composants
+                Stage stage = (Stage) progressIndicator.getScene().getWindow();
                 stage.setScene(scene);                
                 stage.show();
             } catch (IOException ex) {
@@ -85,30 +67,38 @@ public class LearningAIController {
     }
     
     public void startTraining() {
+    	startImageAnimation();
 
         // Check if the config was successfully retrieved
         if (config == null) {
-        	textField.setText("Configuration is not set.");
+        	System.out.println("Configuration is not set.");
             return; // Exit the method if config is not available
         }
         
         System.out.println(config.toString());
         
-        String modelFileName = String.format("model-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+        String modelFileName = "";
+        if (config.level.equals("F")) {
+            modelFileName = String.format("easy-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+        } else if (config.level.equals("M")) {
+            modelFileName = String.format("medium-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+        } else {
+            modelFileName = String.format("difficult-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+        }
         String modelFilePath = "./resources/models/" + modelFileName;
-
+        
         File modelFile = new File(modelFilePath);
         if (!modelFile.exists()) {
             try {
                 modelFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                textField.setText("Failed to create model file.");
+                System.out.println("Failed to create model file.");
                 return;
             }
         }
 
-        HashMap<Integer, Coup> mapTrain = ai.Test.loadCoupsFromFile("./resources/train_dev_test/train.txt");
+        HashMap<Integer, Coup> mapTrain = tools.Test.loadCoupsFromFile("./resources/train_dev_test/train.txt");
         int size = 9;
         int h = config.hiddenLayerSize;
         double lr = config.learningRate;
@@ -154,22 +144,17 @@ public class LearningAIController {
                 return null;
             }
         };
-    
-    
-        
 
-        progressBar.progressProperty().bind(trainingTask.progressProperty());
-        textField.textProperty().bind(trainingTask.messageProperty());
+        progressIndicator.progressProperty().bind(trainingTask.progressProperty()); 
 
         Thread thread = new Thread(trainingTask);
         thread.setDaemon(true);
         thread.start();
 
         trainingTask.setOnSucceeded(e -> {
-            progressBar.progressProperty().unbind();
-            textField.textProperty().unbind();
-            progressBar.setProgress(0);
-            textField.setText("Training complete!");
+            progressIndicator.progressProperty().unbind(); 
+            progressIndicator.setProgress(0);
+            System.out.println("Training complete!");
             save(modelFilePath);
 
             changeScene();
@@ -188,19 +173,13 @@ public class LearningAIController {
             out.close();
             fileOut.close();
 
-            System.out.printf("Le modèle sérialisé est sauvegardé dans %s%n", modelFilePath);
+            System.out.printf("The training model is saved in %s%n", modelFilePath);
         } catch (IOException i) {
             i.printStackTrace();
         }
         
     }
-    
 
-    
-    
-
-    
-    
 	public boolean save(String path){
 		try{
 			FileOutputStream fout = new FileOutputStream(path);
@@ -213,6 +192,32 @@ public class LearningAIController {
 		}
 		return true;
 	}
+	
+	
+	
+	private void startImageAnimation() {
+		String[] paths = {"/images/gr10.png", "/images/gr11.png", "/images/gr12.png"};
+	    Image[] images = new Image[paths.length];
 
+	    for (int i = 0; i < paths.length; i++) {
+	        URL url = getClass().getResource(paths[i]);
+	        if (url == null) {
+	            System.out.println("Cannot find image: " + paths[i]);
+	            continue;
+	        }
+	        images[i] = new Image(url.toString());
+	    }
+		    
+	    final int[] imageIndex = {0}; 
+
+	    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> {
+	        imageView.setImage(images[imageIndex[0]]);
+	        imageView.setFitWidth(200); 
+	        imageView.setFitHeight(200);
+	        imageIndex[0] = (imageIndex[0] + 1) % images.length;
+	    }));
+
+	    timeline.setCycleCount(Timeline.INDEFINITE);
+	    timeline.play();
+	}
 }
-

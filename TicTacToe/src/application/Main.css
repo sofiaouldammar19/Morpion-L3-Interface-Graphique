@@ -1,0 +1,37 @@
+#btn {
+    -fx-background-color:
+            rgba(0,0,0,0.05),
+            linear-gradient(#4b6943, #658354);
+    -fx-background-insets: 0,9 9 8 9,9,10,11;
+    -fx-background-radius: 50;
+    -fx-padding: 15 30 15 30;
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 15px;
+    -fx-text-fill: #ddead1;
+}
+
+#MenuBar {
+	 -fx-background-color:
+            rgba(0,0,0,0.05),
+            linear-gradient(#4b6943, #658354);
+     -fx-pref-height: 40px; 
+     -fx-font-size: 30px; 
+}
+
+#menu .menu-item:focused, #menu .menu-item:hover, #menu:hover, #menu:focus {
+    -fx-background-color: #b3cf99;
+}
+
+
+#btn:hover {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.3;
+}
+
+#back {
+	-fx-background-color: #b3cf99;
+}
+
+#progressIndicator { 
+    -fx-progress-color:  #b3cf99;
+}

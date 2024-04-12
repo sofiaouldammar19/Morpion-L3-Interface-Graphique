@@ -1,4 +1,4 @@
-package ai;
+package tools;
 
 public class Config {
 	
