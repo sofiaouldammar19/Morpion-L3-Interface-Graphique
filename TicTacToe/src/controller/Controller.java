@@ -50,14 +50,6 @@ public class Controller implements Initializable {
 	@FXML
 	private Button gameVsHumanBtn;
 	 
-	 @FXML
-	 private Slider playPauseSlider;
-	 
-	 private MediaPlayer mediaPlayer;
-	 
-	 public static boolean playingAgainstAI = false;
-
-	 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     	settingsMenuItem.setOnAction(event -> showSettingsPopup());
@@ -170,11 +162,8 @@ public class Controller implements Initializable {
     
     @FXML
     private void handleGameVsAI(ActionEvent event) { 
-        try {
-        	// set to true when playing against the AI
-        	Controller.playingAgainstAI = true;
-        	System.out.println(Controller.playingAgainstAI);
-        	
+        try {   
+    		System.out.println("Game mode set to: Human vs AI");
             // Load the FXML for the LearningAIController scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LevelChoiceView.fxml")); 
             Parent root = loader.load();
@@ -198,8 +187,6 @@ public class Controller implements Initializable {
     {
     	try {
     		System.out.println("Game mode set to: Human vs Human");
-    		// Set to false when playing against another human
-    		Controller.playingAgainstAI = false;
     		
     		// Load the FXML for the LearningAIController scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); 

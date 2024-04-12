@@ -51,13 +51,18 @@ public class LearningAIController {
         startTraining();
     }
     
-    private void changeScene() {
+    private void changeScene(String modelFilePath) {
     	Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); 
                 Parent root = loader.load();
                 Scene scene = new Scene(root, 900, 700);
                 Stage stage = (Stage) progressIndicator.getScene().getWindow();
+                
+             // Retrieve the game controller and set AI mode
+                TicTacToeGameController gameController = loader.getController();
+                gameController.setWithAI(true, modelFilePath);  // Set the AI model
+                
                 stage.setScene(scene);                
                 stage.show();
             } catch (IOException ex) {
@@ -83,7 +88,7 @@ public class LearningAIController {
         } else if (config.level.equals("M")) {
             modelFileName = String.format("medium-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
         } else {
-            modelFileName = String.format("difficult-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
+            modelFileName = String.format("hard-%d-%.1f-%d.srl", config.hiddenLayerSize, config.learningRate, config.numberOfhiddenLayers);
         }
         String modelFilePath = "./resources/models/" + modelFileName;
         
@@ -155,46 +160,15 @@ public class LearningAIController {
             progressIndicator.progressProperty().unbind(); 
             progressIndicator.setProgress(0);
             System.out.println("Training complete!");
-            save(modelFilePath);
-
-            changeScene();
+            if (net.save(modelFilePath)) { // Ensure the model is saved before transitioning
+                System.out.printf("The training model is saved in %s%n", modelFilePath);
+                changeScene(modelFilePath);  // Pass the model file path to the game scene
+            } else {
+                System.out.println("Failed to save the model. Check permissions or path.");
+            }
         });
-
-        
-        try {
-            // Création d'un flux de sortie pour écrire dans le fichier
-            FileOutputStream fileOut = new FileOutputStream(modelFilePath);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-
-            // Sérialisation et écriture de l'objet 'net' (votre modèle entraîné) dans le fichier
-            out.writeObject(net); // 'net' est votre instance de MultiLayerPerceptron
-
-            // Fermeture des flux
-            out.close();
-            fileOut.close();
-
-            System.out.printf("The training model is saved in %s%n", modelFilePath);
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-        
     }
 
-	public boolean save(String path){
-		try{
-			FileOutputStream fout = new FileOutputStream(path);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(this);
-			oos.close();
-		}
-		catch (Exception e) { 
-			return false;
-		}
-		return true;
-	}
-	
-	
-	
 	private void startImageAnimation() {
 		String[] paths = {"/images/gr10.png", "/images/gr11.png", "/images/gr12.png"};
 	    Image[] images = new Image[paths.length];
