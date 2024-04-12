@@ -36,8 +36,8 @@ public class TicTacToeGameController {
 
     public TicTacToeGameController() {
         game = new TicTacToeGame();
-        xImage = new Image(TicTacToeGameController.class.getResourceAsStream("/images/x.png"), 50, 50, false, false);
-        oImage = new Image(TicTacToeGameController.class.getResourceAsStream("/images/o.png"), 50, 50, false, false);
+        xImage = new Image(TicTacToeGameController.class.getResourceAsStream("/images/x.png"), 50, 50, true, true);
+        oImage = new Image(TicTacToeGameController.class.getResourceAsStream("/images/o.png"), 50, 50, true, true);
     }
     
     public void setWithAI(boolean withAI, String modelFilePath) {
@@ -56,7 +56,6 @@ public class TicTacToeGameController {
         }
     }
     
-
     private void updateBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -73,7 +72,6 @@ public class TicTacToeGameController {
             }
         }
     }
-
 
     @FXML
     private void handleRetour(ActionEvent event) throws IOException {
@@ -150,8 +148,7 @@ public class TicTacToeGameController {
         }
         return input;
     }
-
-    
+ 
     private int getBestMoveFromOutput(double[] output) {
         int bestMoveIndex = -1;
         double maxScore = Double.NEGATIVE_INFINITY;
@@ -167,8 +164,6 @@ public class TicTacToeGameController {
         return bestMoveIndex;
     }
 
-
-
     private void checkGameState() {
         if (game.checkForWin()) {
             highlightWinningLine(game.getWinningLine());
@@ -177,8 +172,7 @@ public class TicTacToeGameController {
             System.out.println("Game Over: It's a tie!");
         }
     }
-
-    
+   
     private void highlightWinningLine(List<int[]> winningLine) {
         if (winningLine != null) {
             // Disable all buttons to prevent further interaction
