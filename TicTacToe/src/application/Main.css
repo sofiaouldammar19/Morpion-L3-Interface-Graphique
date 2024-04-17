@@ -1,36 +1,70 @@
 #btn {
     -fx-background-color:
             rgba(0,0,0,0.05),
-            linear-gradient(#4b6943, #658354);
+            linear-gradient(#c19a6b, #c19a6b); /* Original color */
     -fx-background-insets: 0,9 9 8 9,9,10,11;
     -fx-background-radius: 50;
     -fx-padding: 15 30 15 30;
     -fx-font-family: "Helvetica";
     -fx-font-size: 15px;
     -fx-text-fill: #ddead1;
+    -fx-effect: dropshadow(gaussian, #c19a6b, 20, 0.3, 0, 0);
+}
+
+#btn:hover {
+     -fx-background-color:
+            rgba(0,0,0,0.05),
+            linear-gradient(#d1b38c, #d1b38c);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
 #MenuBar {
 	 -fx-background-color:
             rgba(0,0,0,0.05),
             linear-gradient(#4b6943, #658354);
-     -fx-pref-height: 40px; 
-     -fx-font-size: 30px; 
+    -fx-pref-height: 40px;
+    -fx-font-size: 20px; /* More readable size */
+    -fx-font-family: "Helvetica"; /* Consistent font family */
+    -fx-effect: dropshadow(three-pass-box, #3d7b37, 10, 0.3, 0, 0);
+}
+
+.menu-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+#menu .menu-item {
+    -fx-padding: 4 8 4 8; /* More padding for better click area */
 }
 
 #menu .menu-item:focused, #menu .menu-item:hover, #menu:hover, #menu:focus {
-    -fx-background-color: #b3cf99;
-}
-
-#btn:hover {
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.3;
+    -fx-background-color: #c19a6b;
 }
 
 #back {
-	-fx-background-color: #b3cf99;
+    -fx-background-color: #b3cf99; /* Lighter background for better contrast */
 }
 
-#progressIndicator { 
-    -fx-progress-color:  #b3cf99;
+#progressIndicator {
+    -fx-progress-color: #658354;
 }
+
+.game-title {
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 50px;
+    -fx-text-fill: #836953;
+}
+
+.text {
+	-fx-text-fill: white; 
+	-fx-font-weight: bold;
+	-fx-font-family: Helvetica;
+}
+
+.label-style {
+    -fx-font-size: 15px;
+    -fx-text-fill: #836953;
+}
+

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Rectangle2D?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@../application/Main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LearningAIController">
-   <children>
-     <ImageView fx:id="imageView" fitHeight="142.0" fitWidth="134.0" layoutX="620.0" layoutY="80.0">
-         <viewport>
-
-         </viewport>
-     </ImageView>
-	<ProgressIndicator id="progressIndicator" fx:id="progressIndicator" layoutX="200" layoutY="179" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200" prefWidth="200" />
-      <Label layoutX="300" layoutY="430" prefHeight="51.0" prefWidth="346.0" text="Frogs have moist, permeable skin that allows them to breathe and absorb water. Many species have brightly colored skin as a warning to predators that they are poisonous or distasteful." />
-      <Label layoutX="300" layoutY="450" prefHeight="51.0" prefWidth="346.0" text="Frogs have moist, permeable skin that allows them to breathe and absorb water. Many species have brightly colored skin as a warning to predators that they are poisonous or distasteful." />
-      <Label layoutX="300" layoutY="470" prefHeight="51.0" prefWidth="346.0" text="Frogs have moist, permeable skin that allows them to breathe and absorb water. Many species have brightly colored skin as a warning to predators that they are poisonous or distasteful." />
-   </children>
-</Pane>
+<VBox id="back" spacing="10" alignment="CENTER" prefHeight="700.0" prefWidth="900.0" stylesheets="@../application/Main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LearningAIController">
+    <children>
+        <ImageView fx:id="imageView" fitHeight="142.0" fitWidth="134.0">
+            <VBox.margin>
+                <Insets top="10" bottom="20" />
+            </VBox.margin>
+        </ImageView>
+        <ProgressIndicator id="progressIndicator" fx:id="progressIndicator" prefHeight="200" prefWidth="200" minHeight="-Infinity" minWidth="-Infinity"/>
+        <Label text="Frogs can freeze without dying; they stop their heart and breathing only to thaw and resume function." styleClass="label-style" wrapText="true" maxWidth="800"/>
+        <Label text="In ancient Rome, people believed that cooking a live frog in a pot would ward off storms and lightning." styleClass="label-style" wrapText="true" maxWidth="800"/>
+        <Label text="The dessert 'frog cake' shaped like a frog's face, is a popular treat in South Australia, beloved for its unique appearance and sweet flavor." styleClass="label-style" wrapText="true" maxWidth="800"/>
+    </children>
+</VBox>

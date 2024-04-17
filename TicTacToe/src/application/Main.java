@@ -15,7 +15,7 @@ public class Main extends Application {
 		
 		stage.setTitle("Tic Tac Toe");
 		
-        Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"), 50, 50, true, true);		
+        Image logo = new Image(getClass().getResourceAsStream("/resources/images/logo.png"), 50, 50, true, true);		
         stage.getIcons().add(logo);
 		
 		Scene scene = new Scene(root, 900, 700);

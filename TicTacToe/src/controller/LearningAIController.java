@@ -17,10 +17,7 @@ import tools.Coup;
 import tools.MultiLayerPerceptron;
 import tools.SigmoidalTransferFunction;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import javafx.util.Duration;
@@ -54,7 +51,7 @@ public class LearningAIController {
     private void changeScene(String modelFilePath) {
     	Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); 
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GameVsAIView.fxml")); 
                 Parent root = loader.load();
                 Scene scene = new Scene(root, 900, 700);
                 Stage stage = (Stage) progressIndicator.getScene().getWindow();
@@ -170,7 +167,7 @@ public class LearningAIController {
     }
 
 	private void startImageAnimation() {
-		String[] paths = {"/images/gr10.png", "/images/gr11.png", "/images/gr12.png"};
+		String[] paths = {"/resources/images/gr10.png", "/resources/images/gr11.png", "/resources/images/gr12.png"};
 	    Image[] images = new Image[paths.length];
 
 	    for (int i = 0; i < paths.length; i++) {
