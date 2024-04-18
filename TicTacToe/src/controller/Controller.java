@@ -41,39 +41,62 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-
+/**
+ * The Controller class is responsible for handling user interactions with the
+ * GUI.
+ * It contains references to various UI components and implements the
+ * Initializable interface,
+ * which means it performs certain actions upon the initialization of the GUI.
+ *
+ * @author Ould Ammar Sofia
+ */
 public class Controller implements Initializable {
-	
-	@FXML
-    private MenuItem settingsMenuItem;
-	
-	@FXML 
-	private MenuItem modelsMenuItem; 
-	 
-	@FXML
-	private Button gameVsAIBtn;
-	
-	@FXML
-	private Button gameVsHumanBtn;
-	
-    private MediaPlayer clickMusic; // MediaPlayer for button click sound
 
-	 
+    // MenuItem for accessing the settings of the application
+    @FXML
+    private MenuItem settingsMenuItem;
+
+    // MenuItem for accessing the models of the application
+    @FXML
+    private MenuItem modelsMenuItem;
+
+    // Button for starting a game against the AI
+    @FXML
+    private Button gameVsAIBtn;
+
+    // Button for starting a game against a human player
+    @FXML
+    private Button gameVsHumanBtn;
+
+    // MediaPlayer object for playing sound effects
+    private MediaPlayer clickMusic;
+
+    /**
+     * This method is called when the Controller class is initialized.
+     * 
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String musicFile = "src/resources/sounds/bell_sound.mp3";
+        String musicFile = "src/resources/sounds/click.mp3";
 
         // Create a Media object for the specified file
         Media music = new Media(new File(musicFile).toURI().toString());
 
         // Create a MediaPlayer object and attach the Media object
         clickMusic = new MediaPlayer(music);
-        
+
         // Setting up button animations
         buttonAnimation(gameVsAIBtn);
         buttonAnimation(gameVsHumanBtn);
     }
 
+    /**
+     * Animates a button to slightly increase in size when hovered over.
+     *
+     * @param button The button to animate.
+     */
     private void buttonAnimation(Button button) {
         ScaleTransition st = new ScaleTransition(Duration.millis(200), button);
         st.setFromX(1);
@@ -85,23 +108,29 @@ public class Controller implements Initializable {
         button.setOnMouseEntered(e -> st.playFromStart());
         button.setOnMouseExited(e -> st.stop());
     }
-    
+
+    /**
+     * Handles the action to start a game against the AI. This method triggers
+     * the scene change to the AI level choice view.
+     *
+     * @param event The event that triggered the method.
+     */
     @FXML
-    private void handleGameVsAI(ActionEvent event) { 
-        try {   
-        	// Play sound effect
+    private void handleGameVsAI(ActionEvent event) {
+        try {
+            // Play sound effect
             if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
                 clickMusic.stop();
                 clickMusic.seek(clickMusic.getStartTime());
             }
             clickMusic.play();
-            
+
             // Load the FXML for the LearningAIController scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LevelChoiceView.fxml")); 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LevelChoiceView.fxml"));
             Parent root = loader.load();
 
             // Get the current stage (window)
-            Stage stage = (Stage) gameVsAIBtn.getScene().getWindow(); 
+            Stage stage = (Stage) gameVsAIBtn.getScene().getWindow();
 
             // Create a new scene with the loaded root node
             Scene scene = new Scene(root, 900, 700);
@@ -113,24 +142,29 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Handles the action to start a game against another human player. This method
+     * triggers the scene change to the human vs. human game view.
+     *
+     * @param event The event that triggered the method.
+     */
     @FXML
-    private void handleGameVsHuman(ActionEvent event)
-    {
-    	try {
-    		// Play sound effect
+    private void handleGameVsHuman(ActionEvent event) {
+        try {
+            // Play sound effect
             if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
                 clickMusic.stop();
                 clickMusic.seek(clickMusic.getStartTime());
             }
             clickMusic.play();
-                		
-    		// Load the FXML for the LearningAIController scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GameVsHumanView.fxml")); 
+
+            // Load the FXML for the LearningAIController scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GameVsHumanView.fxml"));
             Parent root = loader.load();
 
             // Get the current stage (window)
-            Stage stage = (Stage) gameVsHumanBtn.getScene().getWindow(); 
+            Stage stage = (Stage) gameVsHumanBtn.getScene().getWindow();
 
             // Create a new scene with the loaded root node
             Scene scene = new Scene(root, 900, 700);
@@ -142,7 +176,11 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Displays a configuration pop up for setting preferences. The settings include
+     * options for different difficulty levels which affect gameplay against the AI.
+     */
     @FXML
     public void settingsPopUp() {
         ConfigFileLoader configFileLoader = new ConfigFileLoader();
@@ -160,7 +198,7 @@ public class Controller implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setTitle("Configuration");
-        
+
         UnaryOperator<Change> filter = change -> {
             String text = change.getText();
             if (text.matches("[0-9]*")) {
@@ -171,7 +209,7 @@ public class Controller implements Initializable {
 
         // Easy settings HBox
         HBox easyBox = new HBox(10);
-        easyBox.setAlignment(Pos.CENTER); 
+        easyBox.setAlignment(Pos.CENTER);
         Label easyLabel = new Label("Easy:");
         TextField hiddenLayerSizeF = createNumericTextField(Integer.toString(levelF.hiddenLayerSize), filter);
         TextField learningRateF = createNumericTextField(Double.toString(levelF.learningRate), filter);
@@ -181,7 +219,7 @@ public class Controller implements Initializable {
 
         // Medium settings HBox
         HBox mediumBox = new HBox(10);
-        mediumBox.setAlignment(Pos.CENTER); 
+        mediumBox.setAlignment(Pos.CENTER);
         Label mediumLabel = new Label("Medium:");
         TextField hiddenLayerSizeM = createNumericTextField(Integer.toString(levelM.hiddenLayerSize), filter);
         TextField learningRateM = createNumericTextField(Double.toString(levelM.learningRate), filter);
@@ -190,7 +228,7 @@ public class Controller implements Initializable {
 
         // Difficult settings HBox
         HBox difficultBox = new HBox(10);
-        difficultBox.setAlignment(Pos.CENTER); 
+        difficultBox.setAlignment(Pos.CENTER);
         Label difficultLabel = new Label("Difficult:");
         TextField hiddenLayerSizeD = createNumericTextField(Integer.toString(levelD.hiddenLayerSize), filter);
         TextField learningRateD = createNumericTextField(Double.toString(levelD.learningRate), filter);
@@ -198,18 +236,16 @@ public class Controller implements Initializable {
         difficultBox.getChildren().addAll(difficultLabel, hiddenLayerSizeD, learningRateD, numberOfhiddenLayersD);
 
         Button updateBtn = new Button("Update");
-        updateBtn.setLayoutX(250);
-        updateBtn.setLayoutY(300);
         updateBtn.setId("btn");
         buttonAnimation(updateBtn);
 
         updateBtn.setOnAction(event -> {
-        	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
-        		clickMusic.stop();
-        		clickMusic.seek(clickMusic.getStartTime());
+            if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                clickMusic.stop();
+                clickMusic.seek(clickMusic.getStartTime());
             }
-        	clickMusic.play();
-        	
+            clickMusic.play();
+
             String configFilePath = "./resources/config.txt";
 
             // Supprime le fichier existant
@@ -233,41 +269,52 @@ public class Controller implements Initializable {
 
             stage.close();
         });
-        
+
         // Layout for placing the button in the bottom right
         StackPane buttonLayout = new StackPane(updateBtn);
-        buttonLayout.setAlignment(Pos.BOTTOM_RIGHT);  // Align button to the bottom right
-        buttonLayout.setPadding(new Insets(0, 20, 20, 0));  // Padding to keep button off the edges
+        buttonLayout.setAlignment(Pos.BOTTOM_RIGHT); // Align button to the bottom right
+        buttonLayout.setPadding(new Insets(0, 20, 20, 0)); // Padding to keep button off the edges
 
         vbox.getChildren().addAll(easyBox, mediumBox, difficultBox, buttonLayout);
-        
-        Scene scene = new Scene(vbox, 400, 350);
+
+        Scene scene = new Scene(vbox, 350, 320);
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
-        scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm()); 
+        scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());
         stage.showAndWait();
     }
 
+    /**
+     * Creates a TextField that only accepts numeric input.
+     *
+     * @param text The initial text for the TextField.
+     * @param filter A filter that ensures only numeric input is accepted.
+     * @return TextField The newly created TextField with the specified properties.
+     */
     private TextField createNumericTextField(String text, UnaryOperator<Change> filter) {
         TextField textField = new TextField(text);
         textField.setPrefWidth(75);
         textField.setTextFormatter(new TextFormatter<>(filter));
         return textField;
     }
-     
+
+    /**
+     * Displays an informational popup about the game, including version and authorship.
+     */
     @FXML
     public void aboutPopUp() {
         Label aboutText = new Label("Frog Tic Tac Toe v1.0 \nDeveloped by Hammoudi Fatima & \nOuld Ammar Sofia"
-        		+ "\nProject by the UE Professor Mr Morchid \nAll rights reserved.");
-        aboutText.setStyle("-fx-padding: 20; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 14px; -fx-font-family: Helvetica;");
-        		
+                + "\nProject by the UE Professor Mr Morchid \nAll rights reserved.");
+        aboutText.setStyle(
+                "-fx-padding: 20; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 14px; -fx-font-family: Helvetica;");
+
         VBox layout = new VBox(10);
         layout.getChildren().addAll(aboutText);
         layout.setAlignment(Pos.CENTER);
         layout.setStyle("-fx-background-color: #cde4b3; -fx-background-radius: 20px;");
 
         Scene scene = new Scene(layout, 350, 250);
-        scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm()); 
+        scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());
         scene.setFill(Color.TRANSPARENT);
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -278,18 +325,24 @@ public class Controller implements Initializable {
         Button closeBtn = new Button("Close");
         closeBtn.setId("btn");
         closeBtn.setOnAction(event -> {
-	        if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
-	    		clickMusic.stop();
-	    		clickMusic.seek(clickMusic.getStartTime());
-	        }
-	    	clickMusic.play();
-	        stage.close();
+            if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                clickMusic.stop();
+                clickMusic.seek(clickMusic.getStartTime());
+            }
+            clickMusic.play();
+            stage.close();
         });
         layout.getChildren().add(closeBtn);
 
         stage.showAndWait();
-    } 
-   
+    }
+
+    /**
+     * Displays a popup allowing the user to manage AI model files. This includes
+     * options to delete selected models or select all models.
+     *
+     * @param event The event that triggered the method.
+     */
     @FXML
     public void modelPopUp(ActionEvent event) {
         try {
@@ -314,10 +367,11 @@ public class Controller implements Initializable {
                 }
             } else {
                 Label emptyState = new Label("No models available.\n"
-                		+ "Please start the Human vs AI game to train a model \nand see it listed here.");
-                
-                emptyState.setStyle("-fx-padding: 100 10 0 0; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12;");
-                vbox.getChildren().add(emptyState);  // Add the label to vbox if no files found
+                        + "Please start the Human vs AI game to train a model \nand see it listed here.");
+
+                emptyState.setStyle(
+                        "-fx-padding: 100 10 0 0; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12;");
+                vbox.getChildren().add(emptyState); // Add the label to vbox if no files found
             }
 
             Button deleteBtn = new Button("Delete");
@@ -329,12 +383,12 @@ public class Controller implements Initializable {
             buttonAnimation(selectAllBtn);
 
             deleteBtn.setOnAction(e -> {
-            	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
-            		clickMusic.stop();
-            		clickMusic.seek(clickMusic.getStartTime());
+                if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                    clickMusic.stop();
+                    clickMusic.seek(clickMusic.getStartTime());
                 }
-            	clickMusic.play();
-            	
+                clickMusic.play();
+
                 List<CheckBox> selectedItems = new ArrayList<>();
                 for (CheckBox checkBox : listView.getItems()) {
                     if (checkBox.isSelected()) {
@@ -347,12 +401,12 @@ public class Controller implements Initializable {
             });
 
             selectAllBtn.setOnAction(e -> {
-            	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
-            		clickMusic.stop();
-            		clickMusic.seek(clickMusic.getStartTime());
+                if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                    clickMusic.stop();
+                    clickMusic.seek(clickMusic.getStartTime());
                 }
-            	clickMusic.play();
-            	
+                clickMusic.play();
+
                 for (CheckBox checkBox : listView.getItems()) {
                     checkBox.setSelected(true);
                 }

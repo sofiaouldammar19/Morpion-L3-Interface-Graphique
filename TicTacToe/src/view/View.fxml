@@ -1,44 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.*?>
 
-<StackPane id="back" stylesheets="@../application/Main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<StackPane id="back" stylesheets="@../application/Main.css" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-       <!-- Pane for background images with absolute positioning -->
-      <Pane>
-          <!-- Image 1: Frog rotated and positioned -->
-          <ImageView rotate="140" fitHeight="50" fitWidth="50" layoutX="40" layoutY="60">
-              <image>
-                  <Image url="@../resources/images/grenouille.png"/>
-              </image>
-          </ImageView>
-          <!-- Additional background images -->
-          <ImageView rotate="50" fitHeight="50" fitWidth="50" layoutX="800" layoutY="60">
-              <image>
-                  <Image url="@../resources/images/grenouille.png"/>
-              </image>
-          </ImageView>
-          <ImageView fitHeight="50" fitWidth="50" layoutX="400" layoutY="150">
-              <image>
-                  <Image url="@../resources/images/grenouille.png"/>
-              </image>
-          </ImageView>
-          <ImageView rotate="140" fitHeight="50" fitWidth="50" layoutX="600" layoutY="600">
-              <image>
-                  <Image url="@../resources/images/grenouille.png"/>
-              </image>
-          </ImageView>
-      </Pane>
+       <!-- HBox for organizing VBox components in a horizontal layout -->
+        <HBox spacing="340" style="-fx-padding: 50;">
+            <!-- VBox for the left column images -->
+            <VBox spacing="220" style="-fx-padding: 10;">
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+            </VBox>
+
+            <!-- VBox for the center column images -->
+            <VBox spacing="220" style="-fx-padding: 10;">
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+            </VBox>
+
+            <!-- VBox for the right column images -->
+            <VBox spacing="220" style="-fx-padding: 10;">
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="50" fitWidth="50">
+                    <image>
+                        <Image url="@../resources/images/grenouille.png"/>
+                    </image>
+                </ImageView>
+            </VBox>
+        </HBox>
 
       <!-- Main content VBox inside StackPane -->
       <VBox alignment="TOP_CENTER" spacing="50" style="-fx-padding: 0 0 0 0;">

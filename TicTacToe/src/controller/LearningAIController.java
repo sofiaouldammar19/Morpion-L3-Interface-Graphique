@@ -22,8 +22,13 @@ import java.net.URL;
 import java.util.HashMap;
 import javafx.util.Duration;
 
-
-
+/**
+ * The LearningAIController class manages the AI training process for a tic-tac-toe game.
+ * It allows setting configuration parameters for the AI model, initiates the training process,
+ * and handles the user interface during training, including progress updates and animations.
+ *
+ * @author Author
+ */
 public class LearningAIController {
 
     @FXML
@@ -39,15 +44,33 @@ public class LearningAIController {
     
     private MultiLayerPerceptron net;
     
+    /**
+     * Sets the configuration for the AI model.
+     * This configuration includes parameters like the number of hidden layers and learning rate.
+     *
+     * @param config the configuration settings for the AI model
+     */
     public void setConfig(Config config) {
         this.config = config;
     }
 
+    /**
+     * Sets the configuration and starts the AI training process.
+     * This method initializes training immediately after setting the configuration.
+     *
+     * @param config the configuration settings for the AI model
+     */
     public void setConfigAndStart(Config config) {
         this.config = config;
         startTraining();
     }
     
+    /**
+     * Changes the scene of the JavaFX application to display the tic-tac-toe game interface.
+     * This method is called after AI training completes, and it sets up the game for playing against the AI.
+     *
+     * @param modelFilePath the file path to the trained model which will be used in the game
+     */
     private void changeScene(String modelFilePath) {
     	Platform.runLater(() -> {
             try {
@@ -68,6 +91,10 @@ public class LearningAIController {
         });
     }
     
+    /**
+     * Starts the AI training process.
+     * This method prepares and executes the training task, updating the UI with progress and messages.
+     */
     public void startTraining() {
     	startImageAnimation();
 
@@ -166,6 +193,10 @@ public class LearningAIController {
         });
     }
 
+    /**
+     * Initiates an animation in the imageView to display during the AI training process.
+     * This animation cycles through a set of images to indicate ongoing activity.
+     */
 	private void startImageAnimation() {
 		String[] paths = {"/resources/images/gr10.png", "/resources/images/gr11.png", "/resources/images/gr12.png"};
 	    Image[] images = new Image[paths.length];

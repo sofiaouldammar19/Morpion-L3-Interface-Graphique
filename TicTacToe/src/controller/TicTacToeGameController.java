@@ -11,9 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
@@ -22,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -37,33 +33,43 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * Controller class for a Tic Tac Toe game application.
+ * Handles user interactions and updates the game state accordingly.
+ * This controller supports different game modes including Human vs. Human and Human vs. AI.
+ *
+ * @author Sofia Ould Ammar
+ */
 public class TicTacToeGameController {
 
-    @FXML
-    private GridPane gameBoard;
-    
+	@FXML
+    private GridPane gameBoard; // The grid layout for the Tic Tac Toe board
+
     @FXML 
-    private ToggleButton btn;
-    
+    private ToggleButton btn; // A toggle button, if needed for UI (specific function not described)
+
     @FXML
-    private ImageView toggleImageView;
+    private ImageView toggleImageView; // ImageView for displaying current state toggles (e.g., music on/off)
 
-    private Image image1;
+    private Image image1; // Holds the image for the toggle state
 
-    private TicTacToeGame game;
-    private Image xImage;
-    private Image oImage; 
-    private boolean withAI;
-    private MultiLayerPerceptron aiModel; 
-    private MediaPlayer clickMusic; // MediaPlayer for button click sound
-    private MediaPlayer winMusic; // MediaPlayer for win sound effect
-    private MediaPlayer loseMusic; // For tie game sound effect
-    private MediaPlayer musicPlayer; // MediaPlayer for the background music
-    private RotateTransition rotateTransition; // Rotation transition for the music icon
+    private TicTacToeGame game; // Game logic handler
+    private Image xImage; // Image for the X player
+    private Image oImage; // Image for the O player
+    private boolean withAI; // Flag to check if the game is against AI
+    private MultiLayerPerceptron aiModel; // AI model for AI player moves
+    private MediaPlayer clickMusic; // MediaPlayer for button click sound effects
+    private MediaPlayer winMusic; // MediaPlayer for win sound effects
+    private MediaPlayer loseMusic; // MediaPlayer for tie game sound effects
+    private MediaPlayer musicPlayer; // MediaPlayer for background music
+    private RotateTransition rotateTransition; // Animation for the music toggle button
     
+    /**
+     * Initializes the controller class. This method is automatically called after the fxml file has been loaded.
+     */
     @FXML
     private void initialize() {
-    	String clickSoundFile = "src/resources/sounds/bell_sound.mp3";
+    	String clickSoundFile = "src/resources/sounds/click.mp3";
         Media clickSound = new Media(new File(clickSoundFile).toURI().toString());
         clickMusic = new MediaPlayer(clickSound);
         
@@ -91,41 +97,82 @@ public class TicTacToeGameController {
         updateBoard();
     }
 
+    /**
+     * Constructs an instance of the TicTacToeGameController. Initializes the game logic and image resources.
+     */
     public TicTacToeGameController() {
         game = new TicTacToeGame();
         xImage = new Image(TicTacToeGameController.class.getResourceAsStream("/resources/images/x.png"), 50, 50, true, true);
         oImage = new Image(TicTacToeGameController.class.getResourceAsStream("/resources/images/o.png"), 50, 50, true, true);
     }
-    
-    
 
+    /**
+     * Handles action on the 'Home' button click. Prompts user for confirmation to exit.
+     */
     @FXML
     private void handleHome() {
-        try {
-        	if (musicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-                musicPlayer.stop();
-            }
-        	
-        	if (winMusic.getStatus() == MediaPlayer.Status.PLAYING) {
-                winMusic.stop();  // Stop if already playing
-            }
-        	
+    	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+            clickMusic.stop();
+            clickMusic.seek(clickMusic.getStartTime());
+        }
+        clickMusic.play();
+        
+    	// Create a new stage for the confirmation dialog
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.TRANSPARENT);
+
+        // Message label
+        Label confirmLabel = new Label("Are you sure you want to exit the game?");
+        confirmLabel.setStyle("-fx-text-fill: #836953; -fx-font-size: 13px; -fx-font-family: Helvetica;");      
+
+        // Creating buttons for the dialog
+        Button yesButton = new Button("Yes");
+        yesButton.setId("btn");
+        Button noButton = new Button("No");
+        noButton.setId("btn");
+
+        // Setting up actions for buttons
+        yesButton.setOnAction(e -> {
+            proceedToHome();        	
+            stage.close();
+        });
+
+        noButton.setOnAction(e ->{ 
         	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
                 clickMusic.stop();
                 clickMusic.seek(clickMusic.getStartTime());
             }
             clickMusic.play();
+            
+        	stage.close();
+        	
+        });
 
-            Parent ret = FXMLLoader.load(getClass().getResource("/view/View.fxml"));
-            Scene scene = new Scene(ret, 900, 700);
-            Stage currentStage = (Stage) gameBoard.getScene().getWindow(); // This assumes gameBoard is part of the currently active scene
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        // Layout for buttons
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+        buttonLayout.getChildren().addAll(yesButton, noButton);
+
+        // Main layout for the dialog
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(confirmLabel, buttonLayout);
+        layout.setPadding(new Insets(15));
+        layout.setStyle("-fx-background-color: #cde4b3; -fx-background-radius: 20px;");
+
+
+        // Set up the scene and stage
+        Scene scene = new Scene(layout, 300, 150);
+        scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());
+        scene.setFill(Color.TRANSPARENT); // Ensure the scene background is transparent
+        stage.setScene(scene);
+        stage.showAndWait();
     }
    
+    /**
+     * Plays or stops the background music based on its current state.
+     */
     @FXML
     private void handleMusic() {
         if (musicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
@@ -137,36 +184,37 @@ public class TicTacToeGameController {
         }
     }
 
-    @FXML
-    private void handleButtonClick(ActionEvent event) {
-    	Button clickedButton = (Button) event.getSource();
-        Integer row = GridPane.getRowIndex(clickedButton);
-        Integer col = GridPane.getColumnIndex(clickedButton);
-        row = (row == null) ? 0 : row;
-        col = (col == null) ? 0 : col;
-
-        if (withAI) {
-            playWithAI(row, col);
-        } else {
-            playWithHuman(row, col);
-        }
-    }
-    
+    /**
+     * Resets the game. If playing against AI, prompts the user to change difficulty.
+     */
     @FXML
     private void handleRestart() {
-    	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+    	// Play sound effect
+        if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
             clickMusic.stop();
             clickMusic.seek(clickMusic.getStartTime());
         }
         clickMusic.play();
         
-        game = new TicTacToeGame(); // Reset the game model
-        updateBoard();
-        gameBoard.getChildren().forEach(node -> node.setDisable(false)); // Re-enable buttons
+        if (withAI) {
+            showDifficultyChangePopup();
+        } else {
+            restartGame();
+        }
     }
     
+    /**
+     * Displays a help dialog with the game rules.
+     */
     @FXML
     private void handleHelp(MouseEvent event) {
+    	// Play sound effect
+        if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+            clickMusic.stop();
+            clickMusic.seek(clickMusic.getStartTime());
+        }
+        clickMusic.play();
+    	
         // Create the dialog stage which acts as the popup
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -183,7 +231,7 @@ public class TicTacToeGameController {
         );
         
         helpContent.setWrapText(true);
-        helpContent.setStyle("-fx-padding: 20; -fx-text-fill: #836953; -fx-font-size: 15px; -fx-font-family: Helvetica;");      
+        helpContent.setStyle("-fx-text-fill: #836953; -fx-font-size: 13px; -fx-font-family: Helvetica;");      
 
         // Create a button to close the dialog
         Button closeButton = new Button("Close");
@@ -206,14 +254,156 @@ public class TicTacToeGameController {
         dialogVBox.getChildren().addAll(helpContent, closeButton);
 
         // Create a scene and show the stage
-        Scene scene = new Scene(dialogVBox, 500, 400);
+        Scene scene = new Scene(dialogVBox, 450, 350);
         scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());
         scene.setFill(Color.TRANSPARENT); // Ensure the scene background is transparent
         stage.setScene(scene);
         stage.showAndWait();
     }
-
     
+    /**
+     * Responds to button clicks on the game board. Determines the move based on the game mode.
+     */
+    @FXML
+    private void handleButtonClick(ActionEvent event) {
+    	Button clickedButton = (Button) event.getSource();
+        Integer row = GridPane.getRowIndex(clickedButton);
+        Integer col = GridPane.getColumnIndex(clickedButton);
+        row = (row == null) ? 0 : row;
+        col = (col == null) ? 0 : col;
+
+        if (withAI) {
+            playWithAI(row, col);
+        } else {
+            playWithHuman(row, col);
+        }
+    }
+    
+    /**
+     * Displays a confirmation dialog to change the difficulty when playing against AI.
+     * Offers the option to change the difficulty level or continue with the current settings.
+     */
+    private void showDifficultyChangePopup() {
+        // Create a new stage for the confirmation dialog
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.TRANSPARENT);
+
+        // Message label
+        Label confirmLabel = new Label("Do you want to change the difficulty level?");
+        confirmLabel.setWrapText(true);
+        confirmLabel.setStyle("-fx-text-fill: #836953; -fx-font-size: 13px; -fx-font-family: Helvetica;"); 
+
+        // Creating buttons for the dialog
+        Button yesButton = new Button("Yes");
+        yesButton.setId("btn");
+        Button noButton = new Button("No");
+        noButton.setId("btn");
+
+        // Setting up actions for buttons
+        yesButton.setOnAction(e -> {
+            stage.close();
+            try {
+                if (musicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                    musicPlayer.stop();
+                }
+
+                if (winMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                    winMusic.stop();
+                }
+
+                if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                    clickMusic.stop();
+                    clickMusic.seek(clickMusic.getStartTime());
+                }
+                clickMusic.play();
+
+                Parent ret = FXMLLoader.load(getClass().getResource("/view/LevelChoiceView.fxml"));
+                Scene scene = new Scene(ret, 900, 700);
+                Stage currentStage = (Stage) gameBoard.getScene().getWindow();
+                currentStage.setScene(scene);
+                currentStage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        noButton.setOnAction(e -> {
+            stage.close();
+            restartGame();
+        });
+
+        // Layout for buttons
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+        buttonLayout.getChildren().addAll(yesButton, noButton);
+
+        // Main layout for the dialog
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(confirmLabel, buttonLayout);
+        layout.setPadding(new Insets(15));
+        layout.setStyle("-fx-background-color: #cde4b3; -fx-background-radius: 20px;");
+
+        // Set up the scene and stage
+        Scene scene = new Scene(layout, 300, 150);
+        scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());
+        scene.setFill(Color.TRANSPARENT);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+    
+    /**
+     * Resets the game to its initial state, re-enabling all buttons and clearing the board.
+     */
+    private void restartGame() {
+        if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+            clickMusic.stop();
+            clickMusic.seek(clickMusic.getStartTime());
+        }
+        clickMusic.play();
+        
+        game = new TicTacToeGame(); // Reset the game model
+        updateBoard();
+        gameBoard.getChildren().forEach(node -> node.setDisable(false)); // Re-enable buttons
+    }
+
+    /**
+     * Directly transitions the application to the home view.
+     * This method is called after user confirmation to exit the game.
+     */
+    private void proceedToHome() {
+        try {
+            if (musicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                musicPlayer.stop();
+            }
+
+            if (winMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                winMusic.stop();
+            }
+
+            if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                clickMusic.stop();
+                clickMusic.seek(clickMusic.getStartTime());
+            }
+            clickMusic.play();
+
+            Parent ret = FXMLLoader.load(getClass().getResource("/view/View.fxml"));
+            Scene scene = new Scene(ret, 900, 700);
+            Stage currentStage = (Stage) gameBoard.getScene().getWindow();
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    /**
+     * Displays the end game popup with options to restart or go home.
+     * This method is invoked when a game ends either by a win or a tie.
+     *
+     * @param message A message indicating the end game result, e.g., "Player X wins!" or "Game Over: It's a tie!"
+     */
     private void showEndGamePopup(String message) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -227,7 +417,7 @@ public class TicTacToeGameController {
         ImageView restartBtn = new ImageView(new Image(getClass().getResourceAsStream("/resources/images/draw.png"), 60, 60, true, true));
         restartBtn.setPickOnBounds(true);
         restartBtn.setOnMouseClicked(e -> {
-            handleRestart();
+        	restartGame();
             stage.close();
         });
 
@@ -235,7 +425,7 @@ public class TicTacToeGameController {
         ImageView homeBtn = new ImageView(new Image(getClass().getResourceAsStream("/resources/images/hoome.png"), 60, 60, true, true));
         homeBtn.setPickOnBounds(true);
         homeBtn.setOnMouseClicked(e -> {
-            handleHome();
+        	proceedToHome();
             stage.close();
         });
 
@@ -259,7 +449,12 @@ public class TicTacToeGameController {
         stage.showAndWait();
     }
 
-    
+    /**
+     * Determines whether the game is played against AI and sets up the AI model if so.
+     *
+     * @param withAI Indicates whether the game is against AI.
+     * @param modelFilePath The file path to the AI model, necessary if withAI is true.
+     */
     public void setWithAI(boolean withAI, String modelFilePath) {
         this.withAI = withAI;
         System.out.print(withAI);
@@ -276,6 +471,9 @@ public class TicTacToeGameController {
         }
     }
     
+    /**
+     * Updates the display of the game board based on the current state of the game.
+     */
     private void updateBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -293,6 +491,12 @@ public class TicTacToeGameController {
         }
     }
     
+    /**
+     * Handles a player move when playing against another human.
+     *
+     * @param row The row index where the player clicked.
+     * @param col The column index where the player clicked.
+     */
     private void playWithHuman(int row, int col) {
         if (game.playMove(row, col)) {
             updateBoard();
@@ -300,6 +504,12 @@ public class TicTacToeGameController {
         }
     }
     
+    /**
+     * Handles a player move when playing against AI.
+     *
+     * @param row The row index where the player clicked.
+     * @param col The column index where the player clicked.
+     */
     private void playWithAI(int row, int col) {
         if (game.playMove(row, col)) {
             updateBoard();
@@ -312,6 +522,10 @@ public class TicTacToeGameController {
         }
     }
     
+    /**
+     * Performs an AI move based on the current state of the game board.
+     * This method uses the AI model to predict the best move.
+     */
     private void aiMove() {
         double[] input = boardToInputArray(); // Convert current board to input for the AI
         double[] output = aiModel.forwardPropagation(input);
@@ -328,6 +542,11 @@ public class TicTacToeGameController {
         }
     }
     
+    /**
+     * Converts the current state of the game board into an input array for the AI model.
+     *
+     * @return An array representing the current game board, suitable for AI processing.
+     */
     private double[] boardToInputArray() {
         double[] input = new double[9];
         for (int i = 0; i < 3; i++) {
@@ -345,6 +564,14 @@ public class TicTacToeGameController {
         return input;
     }
  
+    /**
+     * Analyzes AI's output to determine the best move based on the highest score.
+     * The AI model outputs a score for each possible move, and this method finds the move with the highest score
+     * that is still available on the board.
+     *
+     * @param output An array of double values representing the score for each board position.
+     * @return The index of the board position corresponding to the best move, or -1 if no valid move is found.
+     */
     private int getBestMoveFromOutput(double[] output) {
         int bestMoveIndex = -1;
         double maxScore = Double.NEGATIVE_INFINITY;
@@ -360,6 +587,9 @@ public class TicTacToeGameController {
         return bestMoveIndex;
     }
 
+    /**
+     * Checks the current game state to determine if there is a winner or if the game has ended in a tie.
+     */
     private void checkGameState() {
         if (game.checkForWin()) {
         	if (winMusic.getStatus() == MediaPlayer.Status.PLAYING) {
@@ -386,6 +616,11 @@ public class TicTacToeGameController {
         }
     }
    
+    /**
+     * Applies a visual effect to highlight the winning line on the game board.
+     *
+     * @param winningLine A list of coordinate pairs indicating the winning line on the board.
+     */
     private void highlightWinningLine(List<int[]> winningLine) {
         if (winningLine != null) {
             // Disable all buttons to prevent further interaction
