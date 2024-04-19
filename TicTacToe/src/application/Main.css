@@ -15,8 +15,6 @@
      -fx-background-color:
             rgba(0,0,0,0.05),
             linear-gradient(#d1b38c, #d1b38c);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
 }
 
 #MenuBar {
@@ -53,7 +51,7 @@
 
 .game-title {
     -fx-font-family: "Helvetica";
-    -fx-font-size: 50px;
+    -fx-font-size: 40px;
     -fx-text-fill: #836953;
 }
 

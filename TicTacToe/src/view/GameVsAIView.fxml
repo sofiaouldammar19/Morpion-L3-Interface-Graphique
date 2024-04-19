@@ -22,20 +22,7 @@
                         <Image url="@../resources/images/hoome.png"/>
                     </image>
                 </ImageView>
-                <MenuButton contentDisplay="TOP" layoutX="37.0" layoutY="58.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
-				    <graphic>
-				        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" pickOnBounds="true">
-				            <image>
-				                <Image url="@../resources/images/menu.png"/>
-				            </image>
-				        </ImageView>
-				    </graphic>
-				    <items>
-				        <MenuItem text="Settings" fx:id="settingsMenuItem"/>
-				        <MenuItem text="Model" fx:id="modelsMenuItem"/>
-				    </items>
-				</MenuButton>
-
+                
                 <Region HBox.hgrow="ALWAYS"/>
                 <ImageView fitHeight="60" fitWidth="60" preserveRatio="true" pickOnBounds="true" onMouseClicked="#handleRestart">
                     <image>

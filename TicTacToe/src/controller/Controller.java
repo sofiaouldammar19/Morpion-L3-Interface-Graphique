@@ -30,6 +30,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -90,23 +91,6 @@ public class Controller implements Initializable {
         // Setting up button animations
         buttonAnimation(gameVsAIBtn);
         buttonAnimation(gameVsHumanBtn);
-    }
-
-    /**
-     * Animates a button to slightly increase in size when hovered over.
-     *
-     * @param button The button to animate.
-     */
-    private void buttonAnimation(Button button) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(200), button);
-        st.setFromX(1);
-        st.setToX(1.1);
-        st.setFromY(1);
-        st.setToY(1.1);
-        st.setAutoReverse(true);
-
-        button.setOnMouseEntered(e -> st.playFromStart());
-        button.setOnMouseExited(e -> st.stop());
     }
 
     /**
@@ -285,20 +269,6 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Creates a TextField that only accepts numeric input.
-     *
-     * @param text The initial text for the TextField.
-     * @param filter A filter that ensures only numeric input is accepted.
-     * @return TextField The newly created TextField with the specified properties.
-     */
-    private TextField createNumericTextField(String text, UnaryOperator<Change> filter) {
-        TextField textField = new TextField(text);
-        textField.setPrefWidth(75);
-        textField.setTextFormatter(new TextFormatter<>(filter));
-        return textField;
-    }
-
-    /**
      * Displays an informational popup about the game, including version and authorship.
      */
     @FXML
@@ -324,6 +294,7 @@ public class Controller implements Initializable {
         // Adding a close button for good UX
         Button closeBtn = new Button("Close");
         closeBtn.setId("btn");
+        buttonAnimation(closeBtn);
         closeBtn.setOnAction(event -> {
             if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
                 clickMusic.stop();
@@ -348,12 +319,13 @@ public class Controller implements Initializable {
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UTILITY);
-            stage.setTitle("Model Files");
+            stage.initStyle(StageStyle.TRANSPARENT); // Set the stage style to transparent
+
+            BorderPane borderPane = new BorderPane();
+            borderPane.setPadding(new Insets(10));
+            borderPane.setStyle("-fx-background-color: #cde4b3; -fx-background-radius: 20px;"); 
 
             VBox vbox = new VBox(10);
-            vbox.setPadding(new Insets(10));
-
             ListView<CheckBox> listView = new ListView<>();
             File dir = new File("./resources/models/");
             File[] files = dir.listFiles();
@@ -368,17 +340,32 @@ public class Controller implements Initializable {
             } else {
                 Label emptyState = new Label("No models available.\n"
                         + "Please start the Human vs AI game to train a model \nand see it listed here.");
+                emptyState.setStyle("-fx-padding: 50 10 0 0; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12px;");
+                emptyState.setWrapText(true);
 
-                emptyState.setStyle(
-                        "-fx-padding: 100 10 0 0; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12;");
+                Button closeButton = new Button("Close");
+                closeButton.setId("btn");
+                buttonAnimation(closeButton);
+                
+                closeButton.setOnAction(e ->{
+                    if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
+                        clickMusic.stop();
+                        clickMusic.seek(clickMusic.getStartTime());
+                    }
+                    clickMusic.play();
+                    
+                    stage.close();
+                });
+
                 vbox.getChildren().add(emptyState); // Add the label to vbox if no files found
+                borderPane.setBottom(closeButton); // Add the close button to the bottom of the border pane
+                BorderPane.setAlignment(closeButton, Pos.BOTTOM_RIGHT); // Align the close button to the right
             }
 
             Button deleteBtn = new Button("Delete");
             Button selectAllBtn = new Button("Select All");
             deleteBtn.setId("btn");
             selectAllBtn.setId("btn");
-
             buttonAnimation(deleteBtn);
             buttonAnimation(selectAllBtn);
 
@@ -388,16 +375,16 @@ public class Controller implements Initializable {
                     clickMusic.seek(clickMusic.getStartTime());
                 }
                 clickMusic.play();
-
-                List<CheckBox> selectedItems = new ArrayList<>();
-                for (CheckBox checkBox : listView.getItems()) {
+                
+                listView.getItems().removeIf(checkBox -> {
                     if (checkBox.isSelected()) {
-                        selectedItems.add(checkBox);
                         File fileToDelete = new File(dir, checkBox.getText());
                         fileToDelete.delete();
+                        return true;
                     }
-                }
-                listView.getItems().removeAll(selectedItems);
+                    return false;
+                });
+                stage.close();
             });
 
             selectAllBtn.setOnAction(e -> {
@@ -411,21 +398,53 @@ public class Controller implements Initializable {
                     checkBox.setSelected(true);
                 }
             });
-
-            // Only add the listView and buttons if files were found
+            
             if (!listView.getItems().isEmpty()) {
                 HBox hboxButtons = new HBox(10); // Spacing between buttons
                 hboxButtons.getChildren().addAll(deleteBtn, selectAllBtn);
                 vbox.getChildren().addAll(listView, hboxButtons);
             }
 
-            Scene scene = new Scene(vbox, 350, 300);
-            scene.getRoot().setStyle("-fx-background-color: #b3cf99;");
-            scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());
+            borderPane.setCenter(vbox); // Add the vbox to the center of the border pane
+
+            Scene scene = new Scene(borderPane, 350, 300);
+            scene.getStylesheets().add(getClass().getResource("/application/Main.css").toExternalForm());            
+            scene.setFill(Color.TRANSPARENT); // Set the scene fill to transparent
             stage.setScene(scene);
             stage.show();
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Animates a button to slightly increase in size when hovered over.
+     *
+     * @param button The button to animate.
+     */
+    private void buttonAnimation(Button button) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), button);
+        st.setFromX(1);
+        st.setToX(1.1);
+        st.setFromY(1);
+        st.setToY(1.1);
+        st.setAutoReverse(true);
+
+        button.setOnMouseEntered(e -> st.playFromStart());
+        button.setOnMouseExited(e -> st.stop());
+    }
+
+    /**
+     * Creates a TextField that only accepts numeric input.
+     *
+     * @param text The initial text for the TextField.
+     * @param filter A filter that ensures only numeric input is accepted.
+     * @return TextField The newly created TextField with the specified properties.
+     */
+    private TextField createNumericTextField(String text, UnaryOperator<Change> filter) {
+        TextField textField = new TextField(text);
+        textField.setPrefWidth(75);
+        textField.setTextFormatter(new TextFormatter<>(filter));
+        return textField;
     }
 }

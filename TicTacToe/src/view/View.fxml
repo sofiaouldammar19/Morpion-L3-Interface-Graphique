@@ -89,7 +89,8 @@
 
           <!-- VBox for Game Title -->
           <VBox alignment="CENTER" spacing="20" style="-fx-padding: 50 0 0 0;">
-              <Label text="Frog Tic Tac Toe" styleClass="game-title" />
+              <Label text="Choose the mode" styleClass="game-title" />
+              
 
               <Button id="btn" fx:id="gameVsAIBtn" onAction="#handleGameVsAI" prefHeight="100.0" prefWidth="350.0" style="-fx-content-display: graphic-only;">
                   <graphic>

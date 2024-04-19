@@ -28,6 +28,7 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -129,8 +130,10 @@ public class TicTacToeGameController {
         // Creating buttons for the dialog
         Button yesButton = new Button("Yes");
         yesButton.setId("btn");
+        buttonAnimation(yesButton);
         Button noButton = new Button("No");
         noButton.setId("btn");
+        buttonAnimation(noButton);
 
         // Setting up actions for buttons
         yesButton.setOnAction(e -> {
@@ -236,6 +239,7 @@ public class TicTacToeGameController {
         // Create a button to close the dialog
         Button closeButton = new Button("Close");
         closeButton.setId("btn");
+        buttonAnimation(closeButton);
         closeButton.setOnAction(e -> {
         	if (clickMusic.getStatus() == MediaPlayer.Status.PLAYING) {
 	    		clickMusic.stop();
@@ -297,8 +301,10 @@ public class TicTacToeGameController {
         // Creating buttons for the dialog
         Button yesButton = new Button("Yes");
         yesButton.setId("btn");
+        buttonAnimation(yesButton);
         Button noButton = new Button("No");
         noButton.setId("btn");
+        buttonAnimation(noButton);
 
         // Setting up actions for buttons
         yesButton.setOnAction(e -> {
@@ -366,6 +372,24 @@ public class TicTacToeGameController {
         game = new TicTacToeGame(); // Reset the game model
         updateBoard();
         gameBoard.getChildren().forEach(node -> node.setDisable(false)); // Re-enable buttons
+    }
+    
+    /**
+     * Applies a scale transition animation to a button to enhance UI interactivity.
+     * This animation enlarges the button when hovered and returns it to its original size when not.
+     *
+     * @param button the button to animate
+     */
+    private void buttonAnimation(Button button) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), button);
+        st.setFromX(1);
+        st.setToX(1.1);
+        st.setFromY(1);
+        st.setToY(1.1);
+        st.setAutoReverse(true);
+
+        button.setOnMouseEntered(e -> st.playFromStart());
+        button.setOnMouseExited(e -> st.stop());
     }
 
     /**

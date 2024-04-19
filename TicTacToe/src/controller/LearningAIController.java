@@ -159,7 +159,7 @@ public class LearningAIController {
                         c = mapTrain.get((int) (Math.round(Math.random() * mapTrain.size())));
                     }
 
-                    error += net.backPropagate(c.in, c.out);
+                    error = net.backPropagate(c.in, c.out);
 
                     if (i % 1000 == 0 && verbose) { 
                         String message = "Error at step " + i + " is " + (error / (double) i);
