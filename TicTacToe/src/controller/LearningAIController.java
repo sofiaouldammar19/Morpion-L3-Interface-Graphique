@@ -27,7 +27,6 @@ import javafx.util.Duration;
  * It allows setting configuration parameters for the AI model, initiates the training process,
  * and handles the user interface during training, including progress updates and animations.
  *
- * @author Author
  */
 public class LearningAIController {
 

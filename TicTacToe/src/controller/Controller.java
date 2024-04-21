@@ -8,8 +8,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
@@ -49,7 +47,6 @@ import javafx.util.Duration;
  * Initializable interface,
  * which means it performs certain actions upon the initialization of the GUI.
  *
- * @author Ould Ammar Sofia
  */
 public class Controller implements Initializable {
 
@@ -195,6 +192,8 @@ public class Controller implements Initializable {
         HBox easyBox = new HBox(10);
         easyBox.setAlignment(Pos.CENTER);
         Label easyLabel = new Label("Easy:");
+        easyLabel.setStyle(
+                "-fx-padding: 20; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12px; -fx-font-family: Helvetica;");
         TextField hiddenLayerSizeF = createNumericTextField(Integer.toString(levelF.hiddenLayerSize), filter);
         TextField learningRateF = createNumericTextField(Double.toString(levelF.learningRate), filter);
         TextField numberOfhiddenLayersF = createNumericTextField(Integer.toString(levelF.numberOfhiddenLayers),
@@ -205,6 +204,8 @@ public class Controller implements Initializable {
         HBox mediumBox = new HBox(10);
         mediumBox.setAlignment(Pos.CENTER);
         Label mediumLabel = new Label("Medium:");
+        mediumLabel.setStyle(
+                "-fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12px; -fx-font-family: Helvetica;");
         TextField hiddenLayerSizeM = createNumericTextField(Integer.toString(levelM.hiddenLayerSize), filter);
         TextField learningRateM = createNumericTextField(Double.toString(levelM.learningRate), filter);
         TextField numberOfhiddenLayersM = createNumericTextField(Integer.toString(levelM.numberOfhiddenLayers), filter);
@@ -214,6 +215,8 @@ public class Controller implements Initializable {
         HBox difficultBox = new HBox(10);
         difficultBox.setAlignment(Pos.CENTER);
         Label difficultLabel = new Label("Difficult:");
+        difficultLabel.setStyle(
+                "-fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 12px; -fx-font-family: Helvetica;");
         TextField hiddenLayerSizeD = createNumericTextField(Integer.toString(levelD.hiddenLayerSize), filter);
         TextField learningRateD = createNumericTextField(Double.toString(levelD.learningRate), filter);
         TextField numberOfhiddenLayersD = createNumericTextField(Integer.toString(levelD.numberOfhiddenLayers), filter);

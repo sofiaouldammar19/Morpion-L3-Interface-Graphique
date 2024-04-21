@@ -39,7 +39,6 @@ import javafx.scene.input.MouseEvent;
  * Handles user interactions and updates the game state accordingly.
  * This controller supports different game modes including Human vs. Human and Human vs. AI.
  *
- * @author Sofia Ould Ammar
  */
 public class TicTacToeGameController {
 
@@ -438,7 +437,7 @@ public class TicTacToeGameController {
         winnerLabel.setStyle("-fx-padding: 20; -fx-text-alignment: center; -fx-text-fill: #836953; -fx-font-size: 17px; -fx-font-family: Helvetica;");
 
         // Create ImageView for restart button
-        ImageView restartBtn = new ImageView(new Image(getClass().getResourceAsStream("/resources/images/draw.png"), 60, 60, true, true));
+        ImageView restartBtn = new ImageView(new Image(getClass().getResourceAsStream("/resources/images/draw.png"), 50, 50, true, true));
         restartBtn.setPickOnBounds(true);
         restartBtn.setOnMouseClicked(e -> {
         	restartGame();

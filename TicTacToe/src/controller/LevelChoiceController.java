@@ -25,7 +25,6 @@ import tools.ConfigFileLoader;
  * It manages transitions between the level selection view and the game or learning views,
  * depending on whether a trained AI model exists for the chosen level.
  *
- * @author Sofia Ould Ammar
  */
 public class LevelChoiceController {
 
