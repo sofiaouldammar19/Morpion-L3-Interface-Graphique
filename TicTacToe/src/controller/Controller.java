@@ -141,7 +141,7 @@ public class Controller implements Initializable {
             clickMusic.play();
 
             // Load the FXML for the LearningAIController scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GameVsHumanView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml"));
             Parent root = loader.load();
 
             // Get the current stage (window)

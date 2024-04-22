@@ -106,7 +106,7 @@ public class LevelChoiceController {
             
             File file = new File(modelFilePath);
             
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/GameVsAIView.fxml" : "/view/LearningAIView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/TicTacToeGameView.fxml" : "/view/LearningAIView.fxml"));
             Parent root = loader.load();
             
             if (!file.exists()) {
@@ -153,7 +153,7 @@ public class LevelChoiceController {
             
             File file = new File(modelFilePath);
             
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/GameVsAIView.fxml" : "/view/LearningAIView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/TicTacToeGameView.fxml" : "/view/LearningAIView.fxml"));
             Parent root = loader.load();
             
             if (!file.exists()) {
@@ -200,7 +200,7 @@ public class LevelChoiceController {
             
             File file = new File(modelFilePath);
             
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/GameVsAIView.fxml" : "/view/LearningAIView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(file.exists() ? "/view/TicTacToeGameView.fxml" : "/view/LearningAIView.fxml"));
             Parent root = loader.load();
             
             if (!file.exists()) {

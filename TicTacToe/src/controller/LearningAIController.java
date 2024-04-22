@@ -73,7 +73,7 @@ public class LearningAIController {
     private void changeScene(String modelFilePath) {
     	Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GameVsAIView.fxml")); 
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicTacToeGameView.fxml")); 
                 Parent root = loader.load();
                 Scene scene = new Scene(root, 900, 700);
                 Stage stage = (Stage) progressIndicator.getScene().getWindow();
